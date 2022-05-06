@@ -85,6 +85,18 @@ app.post("/login", async (req, res) => {
     const user = await User.findOne({ username });
 
     if (user && (await bcrypt.compare(password, user.password))) {
+      
+        const token = jwt.sign(
+          { user_id: user._id, username },
+          process.env.TOKEN_KEY,
+          {
+            expiresIn: "2h",
+          }
+        );
+  
+        // save user token
+        user.token = token;
+        
       res.status(200).send(user);
 
     } else {
