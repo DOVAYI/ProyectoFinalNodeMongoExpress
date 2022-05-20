@@ -72,7 +72,7 @@ app.post("/login", async (req, res) => {
   try {
     // Get user input
     const { username, password } = req.body;
-    
+
     // Validate user input
 
     // Validate if user exist in our database
@@ -85,32 +85,39 @@ app.post("/login", async (req, res) => {
     const user = await User.findOne({ username });
 
     if (user && (await bcrypt.compare(password, user.password))) {
-      
-        const token = jwt.sign(
-          { user_id: user._id, username },
-          process.env.TOKEN_KEY,
-          {
-            expiresIn: "2h",
-          }
-        );
-  
-        // save user token
-        user.token = token;
-        
+
+      const token = jwt.sign(
+        { user_id: user._id, username },
+        process.env.TOKEN_KEY,
+        {
+          expiresIn: "2h",
+        }
+      );
+
+      // save user token
+      user.token = token;
+
       res.status(200).send(user);
 
     } else {
       res.send("usuario y/o contraseña invalido");
     }
-    
+
   } catch (err) {
     console.log(err);
   }
   // Our register logic ends here
 });
 
-app.get("/welcome", auth, (req, res) => {
-  res.status(200).send("Welcome 🙌 ");
+app.get("/players", async (req, res) => {
+  try {
+    const user = await User.find();
+    res.status(200).json(user);
+  } catch (err) {
+    console.log(err)
+  }
+
+  //res.status(200).send("Welcome 🙌 ");
 });
 
 
