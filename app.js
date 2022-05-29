@@ -1,12 +1,34 @@
 require("dotenv").config();
 require("./config/database").connect();
+/**
+ * almacena funcionalidad de express
+ */
 const express = require("express");
+/**
+ * carga modelo a usar de la base de datos
+ */
 const User = require("./model/user");
+/**
+ * carga la funcionalidad de express
+ */
 const app = express();
+/**
+ * carga la funcionalidad para encriptar contraseña
+ */
 const bcrypt = require('bcryptjs');
+/**
+ * carga la funcionalidad para la verificación de token de acceso
+ */
 const jwt = require('jsonwebtoken');
 const auth = require("./middleware/auth");
+/**
+ * carga funcionlidad del cors
+ */
 const cors = require("cors");
+/**
+ * carga funcionalidad de body parser(accesoo alobjeto req)
+ * 
+ */
 const bodyParser = require('body-parser');
 
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -14,6 +36,9 @@ app.use(bodyParser.json());
 app.use(cors());
 app.use(express.json());
 
+/**
+ * ruta permite guardar un nuevo usuario
+ */
 app.post("/register", async (req, res) => {
 
   // Our register logic starts here
@@ -65,17 +90,19 @@ app.post("/register", async (req, res) => {
 
 
 
-
+/**
+ * ruta logerase atravez de tokens de acceso por tal razon se usa 
+ */
 app.post("/login", async (req, res) => {
 
-  // Our login logic starts here
+  // Nuestra lógica de inicio de sesión comienza aquí
   try {
-    // Get user input
+    // Obtener la entrada del usuario
     const { username, password } = req.body;
 
-    // Validate user input
+    // Validar la entrada del usuario
 
-    // Validate if user exist in our database
+    // Validar si el usuario existe en nuestra base de datos
 
 
     if (!(password && username)) {
@@ -106,9 +133,12 @@ app.post("/login", async (req, res) => {
   } catch (err) {
     console.log(err);
   }
-  // Our register logic ends here
+  
 });
 
+/**
+ * esta ruta permite obtener todos los usuario de la bd
+ */
 app.get("/players", async (req, res) => {
   try {
     const user = await User.find();
